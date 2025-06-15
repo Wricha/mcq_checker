@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin: 30px 0 15px 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            display: inline-block;
+        }
+
+        h3 {
+            color: #27ae60;
+            margin: 20px 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: center;
+            background: rgba(39, 174, 96, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #27ae60;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e1e5e9;
+            display: block;
+            margin: 0 auto 30px auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e5e9;
+            font-size: 1rem;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+            transition: background 0.3s ease;
+        }
+
+        .status-correct {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .status-incorrect {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .try-again {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .try-again:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .score-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 MCQ Results</h1>
+        
+        <h2>Original</h2>
+        <img src="{{ url_for('static', filename='uploads/' + original) }}" alt="Original Image">
+        
+        <h2>Grid Layout</h2>
+        <img src="{{ url_for('static', filename=grid.replace('static/', '')) }}" alt="Grid Layout">
+        
+        <h2>Tick Detection</h2>
+        <img src="{{ url_for('static', filename=ticks.replace('static/', '')) }}" alt="Tick Detection">
+        
+        <h2>Final Result</h2>
+        <img src="{{ url_for('static', filename=final.replace('static/', '')) }}" alt="Final Result">
+
+        <h2>📋 Answer Analysis</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Detected</th>
+                    <th>Correct</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results %}
+                <tr>
+                    <td>{{ row.Question }}</td>
+                    <td>{{ row.Detected }}</td>
+                    <td>{{ row.Correct }}</td>
+                    <td class="{% if row.Status == 'Correct' %}status-correct{% else %}status-incorrect{% endif %}">
+                        {{ row.Status }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if score is not none %}
+        <h3>
+            Final Score: 
+            <span class="score-badge">{{ correct }}/{{ total }} ({{ score|round(1) }}%)</span>
+        </h3>
+        {% endif %}
+
+        <div class="center">
+            <a href="/" class="try-again">🔁 Try Again</a>
+        </div>
+    </div>
+
+    <script>
+        // Add status styling based on content
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusCells = document.querySelectorAll('td:last-child');
+            statusCells.forEach(cell => {
+                if (cell.textContent.trim().toLowerCase() === 'correct') {
+                    cell.classList.add('status-correct');
+                    cell.innerHTML = cell.textContent;
+                } else if (cell.textContent.trim().toLowerCase() === 'incorrect') {
+                    cell.classList.add('status-incorrect');
+                    cell.innerHTML = '❌ ' + cell.textContent;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
